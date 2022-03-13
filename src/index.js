@@ -1,36 +1,53 @@
 import React from "react";
 import { render } from "react-dom";
 import axios from "axios";
+import store from "./store";
+import { Provider, connect } from "react-redux";
 
-class App extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      guitarists: [],
-      guitars: [],
+const App = connect(
+  (state) => {
+    return state;
+  },
+  (dispatch) => {
+    return {
+      bootstrap: async () => {
+        const guitarists = (await axios.get("/api/guitarists")).data;
+        //const guitarsResponse = await axios.get("/api/guitars").data;
+        dispatch({
+          type: "LOAD_GUITARISTS",
+          guitarists,
+        });
+      },
     };
   }
-  async componentDidMount() {
-    const guitaristResponse = await axios.get("/api/guitarists");
-    this.setState({
-      guitarists: guitaristResponse.data,
-    });
-  }
+)(
+  class App extends React.Component {
+    componentDidMount() {
+      this.props.bootstrap();
+    }
 
-  render() {
-    const guitarists = this.state.guitarists;
-    return (
-      <div id="body">
-        <h1>Robby's Guitar List</h1>
-        <h2>Guitarists:</h2>
-        <ul>
-          {guitarists.map((guitarist) => {
-            return <li> {guitarist.name}</li>;
-          })}
-        </ul>
-      </div>
-    );
+    render() {
+      const { guitarists } = this.props;
+      return (
+        <div id="body">
+          {guitarists.length}
+          <h1>Robby's Guitar List</h1>
+          <h2>Guitarists:</h2>
+          <ul>
+            {guitarists.map((guitarist) => {
+              return <li> {guitarist.name}</li>;
+            })}
+          </ul>
+          <h2>Guitars:</h2>
+        </div>
+      );
+    }
   }
-}
+);
 
-render(<App />, document.querySelector("#root"));
+render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.querySelector("#root")
+);
