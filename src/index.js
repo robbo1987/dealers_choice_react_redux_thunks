@@ -1,7 +1,7 @@
 import React from "react";
 import { render } from "react-dom";
 import axios from "axios";
-import store, { loadGuitarists, loadGuitars, setView } from "./store";
+import store, { loadGuitarists, loadGuitars} from "./store";
 import { Provider, connect } from "react-redux";
 import Nav from "./Nav.js";
 import Guitarists from "./guitaristComponent";
@@ -18,20 +18,14 @@ const App = connect(
         const guitars = (await axios.get("/api/guitars")).data;
         dispatch(loadGuitarists(guitarists));
         dispatch(loadGuitars(guitars));
-      },
-      setView: function (view) {
-        dispatch(setView(view));
-      },
+      }
     };
   }
 )(
   class App extends React.Component {
     componentDidMount() {
       this.props.bootstrap();
-      window.addEventListener("hashchange", () => {
-        this.props.setView(window.location.hash.slice(1));
-      });
-      this.props.setView(window.location.hash.slice(1));
+      
     }
 
     render() {
@@ -41,10 +35,8 @@ const App = connect(
           <Nav />
           {view}
           <h1>Robby's Guitar List</h1>
-          <h2> This First Section Tests the Nav Functionality</h2>
-          {view === "guitarists" && <Guitarists />}
-          {view === "guitars" && <Guitars />}
-          <h2> This Second Section Shows All Seeded Data</h2>
+          
+          <h2> This Section Shows All Seeded Data</h2>
           <Guitarists />
           <Guitars />
         </div>
