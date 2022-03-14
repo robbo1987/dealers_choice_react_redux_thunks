@@ -41,7 +41,7 @@ app.get("/", (req, res) => res.sendFile(path.join(__dirname, "index.html")));
 app.get("/api/guitarists", async (req, res, next) => {
   try {
     const guitarists = await Guitarist.findAll({
-      include: [Guitar],
+      include: [Guitar]
     });
     res.send(guitarists);
   } catch (ex) {
@@ -52,7 +52,7 @@ app.get("/api/guitarists", async (req, res, next) => {
 app.get("/api/guitars", async (req, res, next) => {
   try {
     const guitars = await Guitar.findAll({
-      include: [Guitarist],
+      include: [Guitarist]
     });
     res.send(guitars);
   } catch (ex) {
@@ -68,6 +68,34 @@ app.get('/', async (req,res,next) => {
         next(ex)
     }
 })
+
+app.get('/all', async(req,res,next) => {
+  try{
+    const guitarists = await Guitarist.findAll({
+      include: [Guitar]})
+    const guitars = await Guitar.findAll({
+        include: [Guitarist]
+      });
+    const guitaristMap = guitarists.map(guitarist => {
+      return `<ul> ${guitarist.name}</ul>`;
+    }).join('');
+    const guitarMap = guitars.map(guitar => {
+      return `<ul> ${guitar.name}</ul>`;
+    }).join('');
+    const html = `<html>
+    <h1>Robby's Guitar Page</h1>
+    <a href= '/'> Back To Home Page </a>
+    <h1>Guitarists</h1>
+    <div> ${guitaristMap}</div>
+    <h1>Guitars</h1>
+    <div> ${guitarMap} </div>
+    </html>`
+      res.send(html)
+    }
+  catch(ex){
+      next(Ex)
+  }
+} )
 //start function
 
 const init = async () => {
