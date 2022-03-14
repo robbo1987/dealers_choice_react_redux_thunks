@@ -1,8 +1,11 @@
 import React from "react";
 import { render } from "react-dom";
 import axios from "axios";
-import store from "./store";
+import store, { loadGuitarists, loadGuitars } from "./store";
 import { Provider, connect } from "react-redux";
+import Nav from "./Nav.js";
+import Guitarists from "./guitaristComponent";
+import Guitars from "./guitarsComponent";
 
 const App = connect(
   (state) => {
@@ -12,11 +15,9 @@ const App = connect(
     return {
       bootstrap: async () => {
         const guitarists = (await axios.get("/api/guitarists")).data;
-        //const guitarsResponse = await axios.get("/api/guitars").data;
-        dispatch({
-          type: "LOAD_GUITARISTS",
-          guitarists,
-        });
+        const guitars = (await axios.get("/api/guitars")).data;
+        dispatch(loadGuitarists(guitarists));
+        dispatch(loadGuitars(guitars));
       },
     };
   }
@@ -30,15 +31,12 @@ const App = connect(
       const { guitarists } = this.props;
       return (
         <div id="body">
-          {guitarists.length}
+          <Nav />
           <h1>Robby's Guitar List</h1>
           <h2>Guitarists:</h2>
-          <ul>
-            {guitarists.map((guitarist) => {
-              return <li> {guitarist.name}</li>;
-            })}
-          </ul>
+          <Guitarists />
           <h2>Guitars:</h2>
+          <Guitars />
         </div>
       );
     }

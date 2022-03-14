@@ -1,0 +1,24 @@
+body {
+    background-color: aquamarine;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  h1 {
+    font-family: fantasy;
+    color: red;
+  }
+  h2 {
+    font-family: fantasy;
+    color: red;
+  }
+  
+  ul {
+    color: blue;
+  }
+  
+  nav {
+      display:flex;
+      justify-content: space-around;
+  }
