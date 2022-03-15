@@ -78,6 +78,17 @@ app.post('/api/guitarists', async (req,res,next) => {
   }
 })
 
+app.delete('/api/guitarists/:id', async (req,res,next) => {
+  try{ 
+    const guitarist = await Guitarist.findByPk(req.params.id)
+    await guitarist.destroy()
+    res.sendStatus(204)
+  }
+  catch(ex) {
+    next(ex)
+  }
+})
+
 
 //start function
 

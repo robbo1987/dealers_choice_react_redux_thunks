@@ -2,9 +2,9 @@ import { createStore, combineReducers, applyMiddleware } from "redux";
 const LOAD_GUITARISTS = "LOAD_GUITARISTS";
 const LOAD_GUITARS = "LOAD_GUITARS";
 const CREATE_GUITARIST = "CREATE_GUITARIST";
+const DESTROY_GUITARIST = "DESTROY_GUITARIST";
 import axios from "axios";
-import thunk from "redux-thunk"
-
+import thunk from "redux-thunk";
 
 const guitaristsReducer = (state = [], action) => {
   if (action.type === LOAD_GUITARISTS) {
@@ -14,6 +14,13 @@ const guitaristsReducer = (state = [], action) => {
     const guitarist = [...state, action.guitarist];
 
     return guitarist;
+  }
+
+  if (action.type === DESTROY_GUITARIST) {
+    const guitarists = state.filter(
+      (guitarist) => guitarist.id !== action.guitarist.id
+    );
+    state = guitarists;
   }
   return state;
 };
@@ -36,7 +43,6 @@ const loadGuitarists = (guitarists) => {
   return { type: LOAD_GUITARISTS, guitarists };
 };
 
-
 const loadGuitars = (guitars) => {
   return {
     type: LOAD_GUITARS,
@@ -46,12 +52,10 @@ const loadGuitars = (guitars) => {
 
 const createGuitarist = () => {
   return async (dispatch) => {
-    const response = await axios.post('/api/guitarists')
-    dispatch({ type: CREATE_GUITARIST, guitarist: response.data})
-  }
-}
-
-
+    const response = await axios.post("/api/guitarists");
+    dispatch({ type: CREATE_GUITARIST, guitarist: response.data });
+  };
+};
 
 export default store;
 export { loadGuitarists, loadGuitars, createGuitarist };
