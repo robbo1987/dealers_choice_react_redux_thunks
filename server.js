@@ -5,6 +5,8 @@ const sequelize = new Sequelize(
   process.env.DATABASE_URL || "postgres://localhost/acme_react_redux"
 );
 const { STRING } = Sequelize.DataTypes;
+const faker = require("faker")
+
 
 const Guitarist = sequelize.define("guitarist", {
   name: {
@@ -25,6 +27,11 @@ const Guitar = sequelize.define("guitar", {
     },
   },
 });
+
+
+Guitarist.generateRandom = function () {
+  return this.create({ name: `Band Name: ${faker.company.companyName()} ` });
+};
 
 Guitarist.belongsTo(Guitar);
 Guitar.hasMany(Guitarist);
@@ -60,6 +67,16 @@ app.get("/api/guitars", async (req, res, next) => {
   }
 });
 
+app.post('/api/guitarists', async (req,res,next) => {
+  try{ 
+      const response = await Guitarist.generateRandom()
+      res.status(201).send(response);
+
+    }
+  catch(ex) {
+    next(ex)
+  }
+})
 
 
 //start function
@@ -98,25 +115,7 @@ const init = async () => {
       Guitar.create({ name: "ESP Eclipse" }),
       Guitar.create({ name: "ESP Horizon" }),
     ]);
-    jamesH.guitarId = espEclipse.id;
-    kirkH.guitarId = espHorizon.id;
-    tedN.guitarId = gibsonByrdland.id;
-    joeW.guitarId = gibsonLesPaul.id;
-    riversC.guitarId = fenderStrat.id;
-    tomMor.guitarId = fenderTele.id;
-    keithR.guitarId = fenderTele.id;
-    ericC.guitarId = fenderStrat.id;
 
-    await Promise.all([
-      jamesH.save(),
-      kirkH.save(),
-      tedN.save(),
-      joeW.save(),
-      riversC.save(),
-      tomMor.save(),
-      ericC.save(),
-      keithR.save(),
-    ]);
     app.listen(port, () => console.log(`listening on port ${port}`));
   } catch (ex) {
     console.log(ex);

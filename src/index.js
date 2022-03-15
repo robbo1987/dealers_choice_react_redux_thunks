@@ -3,7 +3,7 @@ import { render } from "react-dom";
 import axios from "axios";
 import store, { loadGuitarists, loadGuitars} from "./store";
 import { Provider, connect } from "react-redux";
-import Nav from "./Nav.js";
+import Create from './Create.js'
 import Guitarists from "./guitaristComponent";
 import Guitars from "./guitarsComponent";
 
@@ -15,9 +15,11 @@ const App = connect(
     return {
       bootstrap: async () => {
         const guitarists = (await axios.get("/api/guitarists")).data;
-        const guitars = (await axios.get("/api/guitars")).data;
         dispatch(loadGuitarists(guitarists));
+
+        const guitars = (await axios.get("/api/guitars")).data;
         dispatch(loadGuitars(guitars));
+       
       }
     };
   }
@@ -32,12 +34,13 @@ const App = connect(
       const view = this.props.view;
       return (
         <div id="body">
-          <Nav />
-          {view}
           <h1>Robby's Guitar List</h1>
           
           <h2> This Section Shows All Seeded Data</h2>
+          <h2> Guitarists! </h2>
+          <Create />
           <Guitarists />
+          <h2> Guitars! </h2>
           <Guitars />
         </div>
       );
