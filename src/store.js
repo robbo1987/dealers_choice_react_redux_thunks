@@ -1,14 +1,16 @@
-import { createStore, combineReducers } from "redux";
+import { createStore, combineReducers, applyMiddleware } from "redux";
 const LOAD_GUITARISTS = "LOAD_GUITARISTS";
 const LOAD_GUITARS = "LOAD_GUITARS";
 const CREATE_GUITARIST = "CREATE_GUITARIST";
+import axios from "axios";
+import thunk from "redux-thunk"
+
 
 const guitaristsReducer = (state = [], action) => {
   if (action.type === LOAD_GUITARISTS) {
     state = action.guitarists;
   }
   if (action.type === CREATE_GUITARIST) {
-    console.log("ACTION", action.guitarist);
     const guitarist = [...state, action.guitarist];
 
     return guitarist;
@@ -28,9 +30,12 @@ const reducer = combineReducers({
   guitars: guitarsReducer,
 });
 
+const store = createStore(reducer, applyMiddleware(thunk));
+
 const loadGuitarists = (guitarists) => {
   return { type: LOAD_GUITARISTS, guitarists };
 };
+
 
 const loadGuitars = (guitars) => {
   return {
@@ -39,7 +44,14 @@ const loadGuitars = (guitars) => {
   };
 };
 
-const store = createStore(reducer);
+const createGuitarist = () => {
+  return async (dispatch) => {
+    const response = await axios.post('/api/guitarists')
+    dispatch({ type: CREATE_GUITARIST, guitarist: response.data})
+  }
+}
+
+
 
 export default store;
-export { loadGuitarists, loadGuitars };
+export { loadGuitarists, loadGuitars, createGuitarist };
