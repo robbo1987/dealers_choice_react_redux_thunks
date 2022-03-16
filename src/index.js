@@ -14,12 +14,12 @@ const App = connect(
   (dispatch) => {
     return {
       bootstrap: async () => {
-          const guitarists = (await axios.get("/api/guitarists")).data;
-          dispatch(loadGuitarists(guitarists));
-  
-          const guitars = (await axios.get("/api/guitars")).data;
-          dispatch(loadGuitars(guitars));
-      } 
+        const guitarists = (await axios.get("/api/guitarists")).data;
+        dispatch(loadGuitarists(guitarists));
+
+        const guitars = (await axios.get("/api/guitars")).data;
+        dispatch(loadGuitars(guitars));
+      },
     };
   }
 )(
@@ -51,13 +51,3 @@ render(
   </Provider>,
   document.querySelector("#root")
 );
-
-//NEED TO ADD COMBINE REDUCERS, THUNKS AND POST/DELETE
-
-/*const mapDispatch = dispatch => {
-  return {
-    create: ()=> {
-        dispatch(createGuitarist())
-    }
-    }
-};*/
