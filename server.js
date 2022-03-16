@@ -1,41 +1,4 @@
-//sequelize
-
-const Sequelize = require("sequelize");
-const sequelize = new Sequelize(
-  process.env.DATABASE_URL || "postgres://localhost/acme_react_redux"
-);
-const { STRING } = Sequelize.DataTypes;
-const faker = require("faker")
-
-
-const Guitarist = sequelize.define("guitarist", {
-  name: {
-    type: STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: true,
-    },
-  },
-});
-
-const Guitar = sequelize.define("guitar", {
-  name: {
-    type: STRING,
-    allownull: false,
-    validate: {
-      notEmpty: true,
-    },
-  },
-});
-
-
-Guitarist.generateRandom = function () {
-  return this.create({ name: `Band Name: ${faker.company.companyName()} ` });
-};
-
-Guitarist.belongsTo(Guitar);
-Guitar.hasMany(Guitarist);
-//express
+const { Guitarist, Guitar, sequelize } = require("./db/db");
 const express = require("express");
 const app = express();
 const path = require("path");
@@ -67,28 +30,24 @@ app.get("/api/guitars", async (req, res, next) => {
   }
 });
 
-app.post('/api/guitarists', async (req,res,next) => {
-  try{ 
-      const response = await Guitarist.generateRandom()
-      res.status(201).send(response);
-
-    }
-  catch(ex) {
-    next(ex)
+app.post("/api/guitarists", async (req, res, next) => {
+  try {
+    const response = await Guitarist.generateRandom();
+    res.status(201).send(response);
+  } catch (ex) {
+    next(ex);
   }
-})
+});
 
-app.delete('/api/guitarists/:id', async (req,res,next) => {
-  try{ 
-    const guitarist = await Guitarist.findByPk(req.params.id)
-    await guitarist.destroy()
-    res.sendStatus(204)
+app.delete("/api/guitarists/:id", async (req, res, next) => {
+  try {
+    const guitarist = await Guitarist.findByPk(req.params.id);
+    await guitarist.destroy();
+    res.sendStatus(204);
+  } catch (ex) {
+    next(ex);
   }
-  catch(ex) {
-    next(ex)
-  }
-})
-
+});
 
 //start function
 
