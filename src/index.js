@@ -14,11 +14,8 @@ const App = connect(
   (dispatch) => {
     return {
       bootstrap: async () => {
-        const guitarists = (await axios.get("/api/guitarists")).data;
-        dispatch(loadGuitarists(guitarists));
-
-        const guitars = (await axios.get("/api/guitars")).data;
-        dispatch(loadGuitars(guitars));
+        dispatch(loadGuitarists())
+        dispatch(loadGuitars());
       },
     };
   }

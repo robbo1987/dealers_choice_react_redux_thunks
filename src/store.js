@@ -39,16 +39,22 @@ const reducer = combineReducers({
 
 const store = createStore(reducer, applyMiddleware(thunk));
 
-const loadGuitarists = (guitarists) => {
-  return { type: LOAD_GUITARISTS, guitarists };
-};
+const loadGuitarists = () => {
+  
+  return async (dispatch) => { 
+    const guitarists = (await axios.get("/api/guitarists")).data;
+    dispatch({type: LOAD_GUITARISTS, guitarists })
+}
+}
 
-const loadGuitars = (guitars) => {
-  return {
-    type: LOAD_GUITARS,
-    guitars,
-  };
-};
+const loadGuitars = () => {
+  
+  return async (dispatch) => { 
+    const guitars = (await axios.get("/api/guitars")).data;
+    dispatch({type: LOAD_GUITARS, guitars })
+}
+}
+
 
 const createGuitarist = () => {
   return async (dispatch) => {
